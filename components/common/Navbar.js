@@ -1,7 +1,6 @@
 import React, { useState, Fragment, useContext, useEffect } from 'react';
 import clsx from 'clsx';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -10,23 +9,34 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
-import SearchIcon from '@material-ui/icons/Search';
-import MenuIcon from '@material-ui/icons/Menu';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import Badge from '@material-ui/core/Badge';
+
 import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import Collapse from '@material-ui/core/Collapse';
-import HomeIcon from '@material-ui/icons/Home';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import Collapse from '@material-ui/core/Collapse';
+
 import SupervisedUserCircle from '@material-ui/icons/SupervisedUserCircle';
-import FolderSharedIcon from '@material-ui/icons/FolderShared';
-import VpnKeyIcon from '@material-ui/icons/VpnKey';
 import AccountCircle from '@material-ui/icons/AccountCircle';
-import InfoIcon from '@material-ui/icons/Info';
+
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import MenuIcon from '@material-ui/icons/Menu';
+import SettingsIcon from '@material-ui/icons/Settings';
+import PaletteIcon from '@material-ui/icons/Palette';
+import PeopleIcon from '@material-ui/icons/People';
+import AttachMoneyIcon from '@material-ui/icons/AttachMoney';
+import SearchIcon from '@material-ui/icons/Search';
+import SendIcon from '@material-ui/icons/Send';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
+import MailOutlineIcon from '@material-ui/icons/MailOutline';
+import BusinessIcon from '@material-ui/icons/Business';
+import TrafficIcon from '@material-ui/icons/Traffic';
+import NotificationsIcon from '@material-ui/icons/Notifications';
+
+import Notifications from './Notifications';
 
 const drawerWidth = 240;
 
@@ -82,7 +92,7 @@ const useStyles = makeStyles((theme) => ({
     toolbar: {
       display: 'flex',
       alignItems: 'center',
-      justifyContent: 'flex-end',
+      justifyContent: 'space-between',
       padding: theme.spacing(0, 1),
       // necessary for content to be below app bar
       ...theme.mixins.toolbar,
@@ -102,6 +112,9 @@ const useStyles = makeStyles((theme) => ({
     nested: {
       paddingLeft: theme.spacing(4),
     },
+    items: {
+      color: '#002e5b',     
+    }
 }));
 
 
@@ -109,11 +122,13 @@ const Navbar = (props) => {
 
     const classes = useStyles();
     const theme = useTheme();
-    const [open, setOpen] = useState(true);          
+    const [open, setOpen] = useState(true);    
+    const [openSubMenuConfig, setOpenSubMenuConfig] = useState(false);
+    const [openNotifications, setOpenNotifications] = useState(null);
            
     const handleListItemClick = (event, index) => {
       selectItemNavbar(index);
-    };
+    };    
   
     const handleDrawerOpen = () => {
       setOpen(true);
@@ -121,7 +136,19 @@ const Navbar = (props) => {
   
     const handleDrawerClose = () => {
       setOpen(false);
-    };            
+    };
+    
+    const handleItemConfig = () => {
+      setOpenSubMenuConfig(!openSubMenuConfig);
+    }
+
+    const handleOpenNotifications = (event) => {
+      setOpenNotifications(event.currentTarget);
+    };
+  
+    const handleCloseNotifications = () => {
+      setOpenNotifications(null);
+    };
   
     return (
         <Fragment>
@@ -148,9 +175,12 @@ const Navbar = (props) => {
               {props.titulo}
             </Typography>
             <div className={classes.toolbarCustomUser}>
-              <Typography>
-                Usuario
-              </Typography>
+              <IconButton aria-label="show 4 new mails" color="inherit">
+                <Badge badgeContent={17} color="secondary">
+                  <NotificationsIcon onClick={handleOpenNotifications}/>
+                  <Notifications open={openNotifications} handleCloseNotifications={handleCloseNotifications}/>
+                </Badge>
+              </IconButton> 
               <IconButton
                 edge="end"
                 aria-label="account of current user"              
@@ -176,6 +206,8 @@ const Navbar = (props) => {
           }}
         >
           <div className={classes.toolbar}>
+            <div></div><div></div>
+            <img src="/media/img/logo.png" alt="" width="41" height="45"/>
             <IconButton onClick={handleDrawerClose}>
               {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
             </IconButton>
@@ -185,47 +217,73 @@ const Navbar = (props) => {
 
           <List>             
                 <Fragment>
-                    <ListItem button key='nueva-ficha'>
-                        <ListItemIcon><FolderSharedIcon /></ListItemIcon>
-                        <ListItemText primary='Nueva Ficha'/>
+                    <ListItem button key='bien-servicio'>
+                        <ListItemIcon><PaletteIcon className={classes.items}/></ListItemIcon>
+                        <ListItemText primary='Bienes / Servicios' className={classes.items}/>
                     </ListItem>
                       
-                    <ListItem button key='buscar-ficha'>
-                          <ListItemIcon><SearchIcon /></ListItemIcon>
-                          <ListItemText primary='Buscar Ficha'/>
+                    <ListItem button key='clientes'>
+                          <ListItemIcon><PeopleIcon className={classes.items}/></ListItemIcon>
+                          <ListItemText primary='Clientes' className={classes.items}/>
+                    </ListItem>
+                    
+                    <ListItem button key='sc_cliente'>
+                      <ListItemIcon><MailOutlineIcon className={classes.items}/></ListItemIcon>
+                      <ListItemText primary='SC Cliente' className={classes.items}/>
+                    </ListItem>                           
+                    
+                    <ListItem button key='cotizaciones'>
+                      <ListItemIcon><AttachMoneyIcon className={classes.items}/></ListItemIcon>
+                      <ListItemText primary='Cotizaciones' className={classes.items}/>
+                    </ListItem>       
+                
+                    <ListItem button key='sc_a_proveedores'>
+                      <ListItemIcon><SendIcon className={classes.items}/></ListItemIcon>
+                      <ListItemText primary='SC a Proveedores' className={classes.items}/>
+                    </ListItem>       
+                
+                    <ListItem button key='oc_a_proveedores'>
+                      <ListItemIcon><ShoppingCartIcon className={classes.items}/></ListItemIcon>
+                      <ListItemText primary='OC a Proveedores' className={classes.items}/>
+                    </ListItem>
+
+                    <ListItem button onClick={handleItemConfig}>
+                      <ListItemIcon><SettingsIcon /></ListItemIcon>
+                      <ListItemText primary="Configuración" />
+                      {openSubMenuConfig ? <ExpandLess /> : <ExpandMore />}
+                    </ListItem>
+                    <Collapse in={openSubMenuConfig} timeout="auto" unmountOnExit>
+                      <List component="div" disablePadding>
+                        <ListItem button className={classes.nested}>
+                          <ListItemIcon> <BusinessIcon /> </ListItemIcon>
+                          <ListItemText primary="Empresa" />
                         </ListItem>
-                      <Fragment key="consultar-padron-fragment-1">
-                          <Divider/>  
-                          <ListItem button key='consultar-padron'>
-                            <ListItemIcon><SupervisedUserCircle /></ListItemIcon>
-                            <ListItemText primary='Padrón Afiliados'/>
-                          </ListItem>       
-                       </Fragment>
-                        <ListItem button key='consultar-padron-onco'>
-                        <ListItemIcon><SupervisedUserCircle /></ListItemIcon>
-                        <ListItemText primary='Padrón de Planes'/>
-                    </ListItem>                                            
+                        <ListItem button className={classes.nested}>
+                          <ListItemIcon> <PeopleIcon /> </ListItemIcon>
+                          <ListItemText primary="Compradores" />
+                        </ListItem>
+                        <ListItem button className={classes.nested}>
+                          <ListItemIcon> <PaletteIcon /> </ListItemIcon>
+                          <ListItemText primary="Tipos de Servicio" />
+                        </ListItem>
+                        <ListItem button className={classes.nested}>
+                          <ListItemIcon> <PaletteIcon /> </ListItemIcon>
+                          <ListItemText primary="Rubro Bienes" />
+                        </ListItem>
+                        <ListItem button className={classes.nested}>
+                          <ListItemIcon> <TrafficIcon /> </ListItemIcon>
+                          <ListItemText primary="Estado Cotización" />
+                        </ListItem>
+                        <ListItem button className={classes.nested}>
+                          <ListItemIcon> <TrafficIcon /> </ListItemIcon>
+                          <ListItemText primary="Estado Facturas" />
+                        </ListItem>
+                      </List>
+                    </Collapse>       
+                                                                                  
                 </Fragment>                                                           
           </List>                          
-
-          <Divider />
-
-          <List>
-              <ListItem button key='acerca-de'
-                >
-                <ListItemIcon><InfoIcon /></ListItemIcon>
-                <ListItemText primary='Acerca de'/>
-              </ListItem>
-              <ListItem button key='cambiar-password' 
-              >
-              <ListItemIcon><VpnKeyIcon /></ListItemIcon>
-                <ListItemText primary='Cambiar Contraseña'/>
-              </ListItem>
-              <ListItem button key='cerrar-sesion'>
-                <ListItemIcon><ExitToAppIcon /></ListItemIcon>
-                <ListItemText primary='Cerrar Sesión'/>
-              </ListItem>
-          </List> 
+         
         </Drawer>        
         </Fragment>      
     );
